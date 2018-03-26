@@ -1,0 +1,1 @@
+[statictics effiency](https://en.wikipedia.org/wiki/Efficiency_(statistics))Essentially, a more efficient estimator, experiment, or test needs fewer observations than a less efficient one to achieve a given performance. This article primarily deals with efficiency of estimators.

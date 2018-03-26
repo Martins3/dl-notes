@@ -1,0 +1,1 @@
+string_val = "x" * 10  # gives you "xxxxxxxxxx"
