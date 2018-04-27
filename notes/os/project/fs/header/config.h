@@ -14,7 +14,7 @@
 #define KCYN  "\x1B[36m"
 #define KWHT  "\x1B[37m"
 
-#define VIM_BUF_PATH "/home/martin/X-Brain/Notes/Atom/os/project/fs/buf.txt"
+#define VIM_BUF_PATH "/home/martin/X-Brain/Notes/Atom/notes/os/project/fs/buf.txt"
 /**
  * fs 0
  * inode_table x

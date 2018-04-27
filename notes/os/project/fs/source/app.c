@@ -44,33 +44,37 @@ void vim(const char * file_name){
     }
 
     if(DEBUG_APP) printf("vim 读入的数据长度为%u\n", f->len);
-    
+
     // copy the contend to the buf
     char * contend = (char *)malloc(f->len);
     read_file(contend, sizeof(char), f->len, f);
     contend[f->len] = EOF;
     FILE * buf = fopen(VIM_BUF_PATH, "wb");
-    if(f->len)
+    if(f->len){
         fwrite(contend, sizeof(char), f->len - 1, buf);
+    }
     fclose(buf);
+
     free(contend);
 
     // open vim
+    printf("start vim !\n");
     char * args[] = {"vim", VIM_BUF_PATH, NULL};
     int status;
     if(!fork()){
         execvp("vim", args);
     }
-    wait(&status);
+    // wait(&status);
+    printf("back to the main process");
 
-    
+
     buf = fopen(VIM_BUF_PATH, "rb");
     fseek(buf, 0, SEEK_END);
     long fsize = ftell(buf);
     fseek(buf, 0, SEEK_SET);
     contend = (char *)malloc(fsize + 1);
     fread(contend, fsize, 1, buf);
-    fclose(buf); 
+    fclose(buf);
     contend[fsize] = '\0';
 
     clear(f);
@@ -89,21 +93,21 @@ void tree(){
     int file_num = 0;
     int dir_num = 0;
     tree_rec(f, 0, &file_num, &dir_num);
-    free(f); 
+    free(f);
     printf("there are %d dirs and %d files \n", dir_num, file_num);
-} 
+}
 
 int tree_rec(fFile dir, int depth, int * file_num, int * dir_num){
     DIR_FILE f;
     DIR_FILE* files = (DIR_FILE*) malloc(dir->len);
-    
+
     dir->ptr_pos = 0;
 
     read_file(files, sizeof(DIR_FILE), dir->len / sizeof(DIR_FILE), dir);
     int indent = depth * 10;
     for(Integer i = 0; i < dir->len / sizeof(DIR_FILE); i ++){
         memcpy(&f, &files[i], sizeof(f));
-        
+
         if(f.type == 0){
             printf("%*s%s\n",indent,  KGRN, f.file_name);
             (*file_num) ++;
@@ -129,7 +133,7 @@ int ls(int l){
     if(DEBUG_IO) print_inode(cur_dir);
     DIR_FILE f;
     DIR_FILE* files = (DIR_FILE*) malloc(cur_dir->len);
-    
+
     cur_dir->ptr_pos = 0;
     read_file(files, sizeof(DIR_FILE), cur_dir->len / sizeof(DIR_FILE), cur_dir);
 
@@ -145,7 +149,7 @@ int ls(int l){
                 printf("%s%s\n", KMAG, f.file_name);
             }
         }
-        // simple msg 
+        // simple msg
         else if(l == 0){
             if(f.type == 0)
                 printf("%s%s\n", KGRN, f.file_name);
@@ -190,7 +194,7 @@ int cd(const char * dir_name){
     // 判断的是否为根目录
     if(strcmp(dir_name, "/") == 0){
         cur_dir = &root_inode;
-        cd_root(); 
+        cd_root();
         return 1;
     }
 
@@ -207,7 +211,7 @@ int cd(const char * dir_name){
         }
         cd_out();
         return 1;
-    }   
+    }
 
 
     fFile d = open_file(dir_name);
@@ -276,7 +280,7 @@ void terminal(){
 
         if(strcmp(args_contend[0], "clc") == 0){
             error = 0;
-            if(args_count == 1){ 
+            if(args_count == 1){
                 printf("\e[1;1H\e[2J");
             }else{
                 error = 1;
@@ -285,7 +289,7 @@ void terminal(){
 
         if(strcmp(args_contend[0], "rm") == 0){
             error = 0;
-            if(args_count == 1){ 
+            if(args_count == 1){
                 printf("rm: remove dir or file\n");
             }else if(args_count == 2){
                 if(rm(args_contend[1], IS_FILE) == -1){
@@ -302,17 +306,17 @@ void terminal(){
 
         if(strcmp(args_contend[0], "tree") == 0){
             error = 0;
-            if(args_count == 1){ 
+            if(args_count == 1){
                 tree();
             }else{
                 error = 1;
             }
         }
-        
+
 
         if(strcmp(args_contend[0], "ls") == 0){
             error = 0;
-            if(args_count == 1){ 
+            if(args_count == 1){
                 ls(0);
             }else if(args_count == 2 && strcmp("-l", args_contend[1]) == 0){
                 ls(1);
@@ -337,10 +341,10 @@ void terminal(){
             error = 0;
             if(args_count == 1) printf("echo: write to the file\n");
             if(args_count == 2) printf("%s%s\n",KMAG, args_contend[1]);
-            else if(args_count == 4) echo(args_contend[3], args_contend[1]); 
+            else if(args_count == 4) echo(args_contend[3], args_contend[1]);
             else error = 1;
         }
-            
+
 
         if(strcmp(args_contend[0], "mkdir") == 0){
             error = 0;
@@ -356,8 +360,8 @@ void terminal(){
             error = 0;
             if(args_count == 1) printf("cat : print the contend of the file\n");
             else if(args_count == 2) cat(args_contend[1]);
-            else error = 1; 
-        
+            else error = 1;
+
         }
 
         if(strcmp(args_contend[0], "init") == 0){
@@ -389,7 +393,7 @@ void terminal(){
             }
             if(args_count > 2) error = 1;
         }
-        
+
 
         if(strcmp(args_contend[0], "cd") == 0){
             error = 0;

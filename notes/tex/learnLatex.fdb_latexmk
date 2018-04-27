@@ -1,0 +1,17 @@
+# Fdb version 3
+["pdflatex"] 1524459143 "/home/martin/X-Brain/Notes/Atom/notes/tex/learnLatex.tex" "learnLatex.pdf" "learnLatex" 1524459143
+  "/etc/texmf/web2c/texmf.cnf" 1523193226 475 c0e671620eb5563b2130f56340a5fde8 ""
+  "/home/martin/X-Brain/Notes/Atom/notes/tex/learnLatex.tex" 1524459143 112 33685ca3f71933d5f07c5e1bd02432b9 ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1480098733 35752 024fb6c41858982481f6968b5fc26508 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/base/article.cls" 1480098821 19821 310da678527a7dfe2a02c88af38079b7 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo" 1480098821 8292 e897c12e1e886ce77fe26afc5d470886 ""
+  "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1500850919 32036 8f10cb8f6ef259fb5791f09c065d3d13 ""
+  "/usr/share/texmf/web2c/texmf.cnf" 1500850919 32036 8f10cb8f6ef259fb5791f09c065d3d13 ""
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1523193249 127715 132155e7ee9993e0b74e204ed9b866dc ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1523193252 723768 688170d5949224fb62f6c0c514118c0d ""
+  "learnLatex.aux" 1524459143 8 a94a2480d3289e625eea47cd1b285758 ""
+  "learnLatex.tex" 1524459143 112 33685ca3f71933d5f07c5e1bd02432b9 ""
+  (generated)
+  "learnLatex.aux"
+  "learnLatex.log"
+  "learnLatex.pdf"

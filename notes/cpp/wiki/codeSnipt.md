@@ -43,7 +43,7 @@
 
     cin >> a;
     cout << a << endl;
-    
+
     getline(cin, a);
     cout << a << endl;
 
