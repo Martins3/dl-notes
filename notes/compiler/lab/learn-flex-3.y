@@ -18,7 +18,6 @@
 %token EOL
 
 %%
-
 calclist: /* nothing */
  | calclist exp EOL { printf("= %d\n> ", $2); }
  | calclist EOL { printf("> "); } /* blank line or a comment */

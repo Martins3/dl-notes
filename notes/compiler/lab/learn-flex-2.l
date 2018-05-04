@@ -20,7 +20,7 @@ int yylval;
 [0-9]+ { yylval = atoi(yytext); return NUMBER; }
 \n { return EOL; }
 [ \t] { /* ignore whitespace */ }
-. { printf("Mystery character %c\n", *yytext); }
+. { printf("mystery character %c\n", *yytext); }
 %%
 /*
 似乎如果含有返回值，那么yylex，每次实行return 为 yylex() 的返回值
