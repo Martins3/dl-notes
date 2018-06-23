@@ -40,7 +40,6 @@ def naive_conv_with_bn():
     test_data = polygon_data[int(train_test_ratio * dataset_size):dataset_size]
     dd.clear(dd.show_data2)
 
-    
     # Store layers weight & bias
     feature_num1 = 4
     feature_num2 = 16
@@ -59,7 +58,7 @@ def naive_conv_with_bn():
                                     feature_num1, feature_num2], stddev = dev)),
         'wc3': tf.Variable(tf.truncated_normal([kernel_size, kernel_size,
                                     feature_num2, feature_num3], stddev = dev)),
-        
+
         'wc4': tf.Variable(tf.truncated_normal([kernel_size, kernel_size,
                                     feature_num3, feature_num4], stddev = dev)),
         # fully connected, 7*7*64 inputs, 1024 outputs
@@ -112,7 +111,7 @@ def naive_conv_with_bn():
         # Reshape input picture
         x = tf.reshape(x, shape=[-1, image_size, image_size, 1])
         tf.summary.image("probe0", tf.transpose(x, perm = [3, 1, 2, 0]), max_outputs= 1, collections=["probe"])
-        
+
         conv1 = conv2d(x, weights['wc1'], biases['bc1'])
         tf.summary.image("probe1", tf.transpose(conv1, perm = [3, 1, 2, 0]), max_outputs= feature_num1, collections=["probe"])
         conv1 = maxpool2d(conv1)
@@ -181,7 +180,7 @@ def naive_conv_with_bn():
     x = tf.placeholder(tf.float32, [None, n_input])
     ground_truth = tf.placeholder(tf.float32, [None, n_output]) # 意味着开始的时候就是需要转化为 one-hot
     is_training = tf.placeholder(tf.bool)
-    keep_prob = tf.placeholder(tf.float32) #dropout (keep probability) 
+    keep_prob = tf.placeholder(tf.float32) #dropout (keep probability)
 
     pred = conv_net(x, weights, biases, keep_prob)
     # Define loss and optimizer
@@ -218,7 +217,7 @@ def naive_conv_with_bn():
                                        is_training:False})
                 train_writer.add_summary(summary, i)
                 print("{0}  {1}".format(i, acc))
-                
+
             if(i % 200 == 0):
                 s_train_sample = train_data[0:1000]
                 s_train_x = s_train_sample[:, 0:n_input]
@@ -238,8 +237,8 @@ def naive_conv_with_bn():
                 }
                 summary = sess.run(merge_probe, feed_dict = the_dict)
                 probe_writer.add_summary(summary, i)
-                
-                
+
+
 
             np.random.shuffle(train_data)
             train_sample = train_data[0:batch_size]
