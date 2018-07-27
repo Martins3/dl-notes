@@ -6,13 +6,10 @@ import time
 import os
 import makeData
 
-
 # 图片的数值参数
 # train_data and test_data 的确定
 # shuffle
 # iamge_size labels 需要成为超参数
-
-
 
 
 
@@ -22,14 +19,14 @@ def naive_conv():
         makeData.make_data(geometric_data_dir)
         print("generate random data finished !")
     n_output = 10 # 1
-        
+
     polygon_data = np.load(geometric_data_dir)
     learning_rate = 0.0001
     batch_size = 50
     train_test_ratio = 0.8
     dataset_size = polygon_data.shape[0]
 
-    image_size = 60 
+    image_size = 60
     n_input = 60 * 60 # 图片的大小
     dev = 0.1
     bias_init = 0.1
@@ -134,7 +131,7 @@ def naive_conv():
         fc3 = tf.nn.relu(bn3)
         fc3 = tf.nn.dropout(fc3, dropout) # dorpout 不可以去除
 
-        
+
         # Output, class prediction
         out = tf.nn.relu(tf.add(tf.matmul(fc3, weights['out']), biases['out']))
         return out
@@ -252,14 +249,14 @@ def naive_conv_with_bn():
         makeData.make_data(geometric_data_dir)
         print("generate random data finished !")
     n_output = 10 # 1
-        
+
     polygon_data = np.load(geometric_data_dir)
     learning_rate = 0.0001
     batch_size = 50
     train_test_ratio = 0.8
     dataset_size = polygon_data.shape[0]
 
-    image_size = 60 
+    image_size = 60
     n_input = 60 * 60 # 图片的大小
     dev = 0.1
     bias_init = 0.1
@@ -378,7 +375,7 @@ def naive_conv_with_bn():
         fc3 = tf.nn.relu(bn3)
         fc3 = tf.nn.dropout(fc3, dropout) # dorpout 不可以去除
 
-        
+
         # Output, class prediction
         out = tf.nn.relu(tf.add(tf.matmul(fc3, weights['out']), biases['out']))
         return out
@@ -436,13 +433,7 @@ def naive_conv_with_bn():
 
     # Initializing the variables
     init = tf.global_variables_initializer()
-
-
-
-
-
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
-
 
     # Initializing the variables
     init = tf.global_variables_initializer()

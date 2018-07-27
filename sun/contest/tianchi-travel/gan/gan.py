@@ -84,25 +84,27 @@ def show_result(batch_res, fname, grid_size=(8, 8), grid_pad=5):
 def train():
     mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
 
+    # 两个模型都需要placeholder
     x_data = tf.placeholder(tf.float32, [batch_size, img_size], name="x_data")
     z_prior = tf.placeholder(tf.float32, [batch_size, z_size], name="z_prior")
 
+    # 参数
     keep_prob = tf.placeholder(tf.float32, name="keep_prob")
     global_step = tf.Variable(0, name="global_step", trainable=False)
     # 参数 trainable 含义： 训练的时候分为 两个的部分的数据来处理的
     # z-data 的含义是什么 ？
 
-
+    # 将placeholder注入到其中
     x_generated, g_params = build_generator(z_prior)
     y_data, y_generated, d_params = build_discriminator(x_data, x_generated, keep_prob)
+
+    # loss 的定义的
     d_loss = - (tf.log(y_data) + tf.log(1 - y_generated))
     g_loss = - tf.log(y_generated)
-
 
     optimizer = tf.train.AdamOptimizer(0.0001)
     d_trainer = optimizer.minimize(d_loss)
     g_trainer = optimizer.minimize(g_loss, var_list=g_params)
-
 
 
     init = tf.global_variables_initializer()

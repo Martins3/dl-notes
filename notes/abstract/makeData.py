@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from skimage import draw
 from scipy import misc
 from scipy import ndimage
-import skimage 
+import skimage
 
 
 
@@ -94,7 +94,7 @@ def make_polygons(dataset_size = 800, labels = 8, regular = True,
 # 如何放置碰撞
 def make_geomeric_objects(dataset_size = 10000, hole = False,
                  edge_style = "sharp", num_range = (1, 11),
-                 image_size = (60, 60), single_shape = False,
+                 image_size = (28, 28), single_shape = False,
                  object_shape = "circle", locations = dd.five_star,
                  noise= False, guassian = False):
     """
@@ -130,9 +130,9 @@ def make_geomeric_objects(dataset_size = 10000, hole = False,
                 ndimage.gaussian_filter(picture[picture_index], sigma=0.5)
             if(noise):
                 picture[picture_index] = \
-                 skimage.util.random_noise(picture[picture_index], 
+                 skimage.util.random_noise(picture[picture_index],
                  mode='gaussian', seed=None, clip=True, var = 0.02)
-            
+
     # 毫无新意的部分, 注意标签的不代表数值
     signatures = np.asarray([x % labels for x in range(dataset_size)],dtype = np.float32)
     signatures = np.reshape(signatures, [dataset_size, 1])
@@ -191,16 +191,16 @@ def make_lines(dataset_size = 10000, num_range = (1, 11), width = 2,
 
 
 
-def make_tiles(dataset_size = 10000, size_range = (10, 20), blurry = False,
-               noise = False, piece_num = 2, image_size = (60, 60),
-               rotate = False, depth = 5):
+def make_tiles(dataset_size = 10000, size_range = (7, 20), blurry = False,
+               noise = False, piece_num = 2, image_size = (28, 28),
+               rotate = False, depth = 3):
 
     def in_range(point):
         if(point[0] < 0 or point[0] >= image_size[0] or point[1] < 0 or point[1] > image_size[1]):
             return False
         else:
             return True
-    
+
     def rec_not_intersect(pointA, pointAP, rec_a, rec_b):
         a = (pointA[0], pointAP[1])
         b = (pointAP[0], pointA[1])
@@ -210,20 +210,12 @@ def make_tiles(dataset_size = 10000, size_range = (10, 20), blurry = False,
             return True
         return False
 
-
-        
-        
-
-    
     def not_intersect(point, rect_a, rect_b):
         width_range = (min(rect_a[0], rect_b[0]), max(rect_a[0], rect_b[0]))
         length_range = (min(rect_a[1], rect_b[1]), max(rect_a[1], rect_b[1]))
-        return (point[0] < width_range[0] - 1 or point[0] > width_range[1] + 1) and  (point[1] < length_range[0] - 1 or point[1] > length_range[1] + 1) 
- 
-
+        return (point[0] < width_range[0] - 1 or point[0] > width_range[1] + 1) and  (point[1] < length_range[0] - 1 or point[1] > length_range[1] + 1)
 
     def random_direction(point, width, length, rd = None):
-        
         if(rd == None):
             rd = np.random.randint(0, 4)
 
@@ -250,13 +242,15 @@ def make_tiles(dataset_size = 10000, size_range = (10, 20), blurry = False,
                 return  (np.random.randint(image_size[0] - score, image_size[0] - 1), np.random.randint(1, score))
             else:
                 return  (np.random.randint(image_size[0] - score, image_size[0] - 1), np.random.randint(image_size[1] - score, image_size[1] - 1))
-            
-    
+
     picture = np.zeros((dataset_size, image_size[0], image_size[1]), dtype = np.float32)
     # 由于只有两个类别, 偶数正确 计数的时候错误
-    for iter_num in range(dataset_size):
-        
-        right = True if(iter_num % 2 == 0) else False
+    iter_num = 0
+    while(iter_num < dataset_size):
+        print("iter_num : ", iter_num)
+
+        # right = True if(iter_num % 2 == 0) else False
+        right = True # 需要全部的数据都是真实数据
 
         # 每一次创建的时候, 使用不相同的size
         width = np.random.randint(*size_range)
@@ -273,26 +267,40 @@ def make_tiles(dataset_size = 10000, size_range = (10, 20), blurry = False,
         pointB = ()
         pointBP = ()
 
-        while(True):
+
+        fail = 0
+        while(fail < 10):
+            fail = fail + 1
+            if(fail == 10):
+                break
+
             pointB = generate_random_point() # 生成第一个valid 的点
             while(not not_intersect(pointB, pointA, pointAP)): # 如果创建的位置本身在矩形中间
                 pointB = generate_random_point()
+
             break_signal = False
             for i in range(4):
                 pointBP = random_direction(pointB, width, length, rd = i)
                 if(in_range(pointBP) and rec_not_intersect(pointB, pointBP, pointA, pointAP)):
                     break_signal = True
                     break
+
             if(break_signal):
                 break
+
+        if(fail == 10):
+            continue
+
+        # if(iter_num < 10):
+            # print(pointA, pointAP, pointB, pointBP)
+        # else:
+            # return
 
         # 重做 point的表示, 使用左上方的点
         point_A = (min(pointA[0], pointAP[0]), max(pointA[1], pointAP[1]))
         point_AP = (max(pointA[0], pointAP[0]), min(pointA[1], pointAP[1]))
         point_B = (min(pointB[0], pointBP[0]),  max(pointB[1], pointBP[1]))
         point_BP = (max(pointB[0], pointBP[0]), min(pointB[1], pointBP[1]))
-        
-
 
         if(abs(pointA[0] - pointAP[0]) == abs(pointB[0] - pointBP[0])):
             # 方向相同, step 需要保证为 大于0 的
@@ -301,17 +309,16 @@ def make_tiles(dataset_size = 10000, size_range = (10, 20), blurry = False,
             choice_side = np.random.random() > 0.5
             if(np.random.random() > 0.5):
                 # 从第一个维度
-                step = 0 
+                step = 0
                 for index in range(point_AP[0] - point_A[0]):
                     picture[iter_num, point_A[0] + index, point_AP[1]: point_A[1] - step] = 1
                     cor_step = step if(right) else np.random.randint(0, depth)
-
 
                     if(choice_side):
                         picture[iter_num, point_B[0] + index, point_B[1] - cor_step - base: point_B[1]] = 1
                     else:
                         picture[iter_num, point_B[0] + index, point_BP[1]: point_BP[1] + base + cor_step] = 1
-                    
+
                     goto = np.random.randint(-1, 2)
                     step = step + goto
                     if(step < 0 or step > depth):
@@ -319,22 +326,22 @@ def make_tiles(dataset_size = 10000, size_range = (10, 20), blurry = False,
 
             else:
                 # 从第二个维度
-                step = 0 
+                step = 0
                 for index in range(point_A[1] - point_AP[1]):
                     picture[iter_num, point_A[0]:(point_AP[0] - step), point_AP[1] + index] = 1
                     cor_step = step if(right) else np.random.randint(0, depth)
 
-                   
+
                     if(choice_side):
                         picture[iter_num, point_B[0]: point_B[0] + cor_step + base, point_BP[1] + index] = 1
                     else:
                         picture[iter_num, point_BP[0] - cor_step - base: point_BP[0], point_BP[1] + index] = 1
-                    
+
                     goto = np.random.randint(-1, 2)
                     step = step + goto
                     if(step < 0 or step > depth):
                         step = depth // 2
-                
+
         else:
             # 方向不同, 由于随机的关系, A 从 维度1 , B 从维度 2
 
@@ -343,7 +350,7 @@ def make_tiles(dataset_size = 10000, size_range = (10, 20), blurry = False,
                 picture[iter_num, point_A[0]:point_AP[0] - step, point_AP[1] + index] = 1
                 cor_step = step if(right) else np.random.randint(0, depth)
 
-                
+
                 if(choice_side):
                     picture[iter_num, point_B[0] + index, point_B[1] - cor_step - base: point_B[1]] = 1
                 else:
@@ -354,6 +361,7 @@ def make_tiles(dataset_size = 10000, size_range = (10, 20), blurry = False,
                 if(step < 0 or step > depth):
                     step = depth // 2
 
+        iter_num = iter_num + 1
     labels = 2
     signatures = np.asarray([x % labels for x in range(dataset_size)],dtype = np.float32)
     signatures = np.reshape(signatures, [dataset_size, 1])
@@ -361,8 +369,6 @@ def make_tiles(dataset_size = 10000, size_range = (10, 20), blurry = False,
     data = np.append(picture, signatures, 1)
     np.save(dd.tiles, data)
 
-
-    
 
 def make_data(data_dir):
     np.random.seed(41)
@@ -375,54 +381,45 @@ def make_data(data_dir):
     elif(data_dir == dd.ploygons):
         make_polygons()
     elif (data_dir == dd.five_star_noise):
-         make_geomeric_objects(dataset_size = 20000, guassian = True, 
+         make_geomeric_objects(dataset_size = 20000, guassian = True,
     noise= True, locations = dd.five_star_noise)
     elif(data_dir == dd.five_star_huge):
-        make_geomeric_objects(dataset_size = 30000 ,image_size = (120, 120), locations = dd.five_star_huge, 
+        make_geomeric_objects(dataset_size = 30000 ,image_size = (120, 120), locations = dd.five_star_huge,
         num_range = (1, 51))
     elif(data_dir == dd.five_star_not_huge):
-        make_geomeric_objects(dataset_size = 30000 ,image_size = (120, 120), locations = dd.five_star_not_huge, 
+        make_geomeric_objects(dataset_size = 30000 ,image_size = (120, 120), locations = dd.five_star_not_huge,
         num_range = (1, 31), guassian = True, noise = True)
     elif(data_dir == dd.vgg_pictures):
         vgg_make_data()
     else:
-
         raise NotImplemented
-    
+
 
 
 def test_tensor():
-    a = np.arange(10)
-    b = np.arange(10 * 100).reshape(100, 10)
-    c = np.arange(10 * 100).reshape(100, 10)
-    dd.clear(dd.show_data)
+    num = 800
+    size = 60
+    data_dir = dd.ploygons
+    show_dir = dd.show_data + "/polygon/"
 
-    tensor = tf.placeholder(tf.int32, [10], name = "t")
-
-    pred = tf.placeholder(tf.float32, [100, 10], name = "pred")
-    ax = tf.argmax(pred, 1)
-    real = tf.placeholder(tf.float32, [100, 10], name = "real")
-    bx = tf.argmax(real, 1)
-    print(pred.shape)
-    print(ax.shape)
-        
-
-    def make_tensor_summary(tensor, name='error'):
-        for i in range(tensor.get_shape().as_list()[0]):
-            tf.summary.scalar(name + '_' + str(i) , tensor[i])
-    
-    make_tensor_summary(tensor)
-
-
-
+    dd.clear(show_dir)
+    tensor = tf.placeholder(tf.float32, [num, size * size], name = "t")
+    tf.summary.image("x_generated", tf.reshape(tensor, [-1, size, size, 1]), max_outputs= 10)
     merged = tf.summary.merge_all()
-    writer = tf.summary.FileWriter(dd.show_data + "/tensor") # 3
-    with tf.Session() as sess:
+    writer = tf.summary.FileWriter(show_dir)
 
-        for i in range(10):
-            a = a + 1
-            summary = sess.run(merged, feed_dict={tensor:a, pred:b, real:c})
-            writer.add_summary(summary, i)
+    a = np.load(data_dir)
+    a = a[:, 0:-1]
+
+    # mnist
+    # from tensorflow.examples.tutorials.mnist import input_data
+    # mnist = input_data.read_data_sets('/home/martin/X-Brain/Martins3.github.io/source/_posts/nonsense/ML/project/MNIST_data', one_hot=True)
+    # x_value, _ = mnist.train.next_batch(100)
+    # a = x_value
+
+    with tf.Session() as sess:
+        summary = sess.run(merged, feed_dict={tensor:a})
+        writer.add_summary(summary, 0)
     writer.close()
 
 
@@ -430,7 +427,7 @@ def test_Generators():
     num_range = (1, 31)
     data_size = 300 # 4
 
-    make_geomeric_objects(dataset_size = 300 ,image_size = (120, 120), locations = dd.five_star_not_huge, 
+    make_geomeric_objects(dataset_size = 300 ,image_size = (120, 120), locations = dd.five_star_not_huge,
         num_range = (1, 31), guassian = True, noise = True)
     input_data = np.load(dd.five_star_not_huge) # 1
     print(input_data.shape)
@@ -505,22 +502,17 @@ def make_one_line():
     print(valid_angles)
 
 
-
     picture = ndimage.gaussian_filter(picture, sigma=0.8)
     # picture = ndimage.uniform_filter(picture, size=2) 放弃使用
     # picture = ndimage.median_filter(picture, 1)
 
     plt.imshow(picture, cmap = "gray")
-    plt.show()
-
-
-
-
-
-
 
 if __name__ == "__main__":
     a = time.time()
-    test_tensor()
     np.random.seed(41)
+    # make_geomeric_objects()
+    # make_tiles()
+    # make_geomeric_objects()
+    test_tensor()
     print(time.time() - a)

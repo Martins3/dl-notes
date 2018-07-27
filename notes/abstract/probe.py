@@ -3,9 +3,9 @@
 初步的实现是:  将feature 中间的打印出来
 
 1. 首先, 检查现在的模型 处理的问题的能力
-2. 各种检查内部, 随着时间的变化, 随着结果的变化, 随着位置的变化, 随着数据集合不同的时候, feature的变化是什么 
+2. 各种检查内部, 随着时间的变化, 随着结果的变化, 随着位置的变化, 随着数据集合不同的时候, feature的变化是什么
 3. 需要指定一张图片, 然后查看一个图片随着时间的变化得到的结果
-4. 重做数据集合, 指定第10张 
+4. 重做数据集合, 指定第10张
 
 
 10. 修改当前模型, 将使用三层的dropout, 减少使用 dc的数量
@@ -25,7 +25,7 @@ def naive_conv_with_bn():
     learning_rate = 0.0001
     batch_size = 50
     train_test_ratio = 0.8
-    image_size = 60 
+    image_size = 60
     n_input = 60 * 60 # 图片的大小
     dev = 0.1
     bias_init = 0.1
@@ -45,7 +45,7 @@ def naive_conv_with_bn():
     test_data = polygon_data[int(train_test_ratio * dataset_size):dataset_size]
     dd.clear(dd.show_data2)
 
-    
+
     # Store layers weight & bias
     feature_num1 = 6
     feature_num2 = 12
@@ -54,6 +54,7 @@ def naive_conv_with_bn():
     full_hidden_1 = 800
     full_hidden_2 = 300
     full_hidden_3 = 100
+
     weights = {
         # 5x5 conv, 1 input, 32 outputs
         'wc1': tf.Variable(tf.truncated_normal([kernel_size, kernel_size, 1,
@@ -61,6 +62,7 @@ def naive_conv_with_bn():
         # 5x5 conv, 32 inputs, 64 outputs
         'wc2': tf.Variable(tf.truncated_normal([kernel_size, kernel_size,
                                                 feature_num1, feature_num2], stddev = dev)),
+
         'wc3': tf.Variable(tf.truncated_normal([kernel_size, kernel_size,
                                                 feature_num2, feature_num3], stddev = dev)),
         # fully connected, 7*7*64 inputs, 1024 outputs
@@ -112,7 +114,7 @@ def naive_conv_with_bn():
     def conv_net(x, weights, biases, dropout):
         # Reshape input picture
         x = tf.reshape(x, shape=[-1, 60,60, 1])
-        # 0 
+        # 0
         tf.summary.image("probe0", tf.transpose(x, perm = [3, 1, 2, 0]), max_outputs= 1, collections=["probe"])
 
         conv1 = conv2d(x, weights['wc1'], biases['bc1'])
@@ -209,7 +211,7 @@ def naive_conv_with_bn():
     x = tf.placeholder(tf.float32, [None, n_input])
     ground_truth = tf.placeholder(tf.float32, [None, n_output]) # 意味着开始的时候就是需要转化为 one-hot
     is_training = tf.placeholder(tf.bool)
-    keep_prob = tf.placeholder(tf.float32) #dropout (keep probability) 
+    keep_prob = tf.placeholder(tf.float32) #dropout (keep probability)
 
     pred = conv_net(x, weights, biases, keep_prob)
     # Define loss and optimizer
@@ -266,8 +268,6 @@ def naive_conv_with_bn():
                 }
                 summary = sess.run(merge_probe, feed_dict = the_dict)
                 probe_writer.add_summary(summary, i)
-                
-                
 
             np.random.shuffle(train_data)
             train_sample = train_data[0:batch_size]

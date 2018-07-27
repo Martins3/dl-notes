@@ -20,8 +20,6 @@ elif(user_name == "huxueshi"):
     home_dir = "/home/huxueshi/abstract/data"
 else:
     home_dir = "/home/ubuntu/data"
-    
-
 
 show_data = home_dir + "/show_data"
 show_data2 = home_dir + "/show_data2"
