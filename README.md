@@ -4,11 +4,6 @@ This the station where I put all my personal work here,  all the code and docum
 
 There are some highlights here
 
-## [Leetcode Solutions](https://leetcode.com/martins3/) 
-The importance of algorithm and data structure is can never be exaggerated.
-Whats more do some exercise make my brain sole and wipe the impetuous monster 
-who born by some state-of-the-art papers about the deep learning.
-
 ## [deep learning](https://en.wikipedia.org/wiki/Deep_learning)
 although may trivial trifles hinder me,making it fairly difficult for me have sufficient time for ML,
 I declare here this my favorite project.Here are some book notes for the book I read and fight,

@@ -1,7 +1,6 @@
 1. pull epidemic
     start slowly, and end quickly !
 
-
 2. basic protocol
     1. member maintains a list of pairs
     2. periodically, each member gossips:

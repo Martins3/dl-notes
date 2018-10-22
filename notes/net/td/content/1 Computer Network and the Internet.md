@@ -1,7 +1,3 @@
-
-
-
-
 # Computer Network and the Internet
 computer-aided manufacturing.
 network’s edge and end systems 
