@@ -1,7 +1,0 @@
-PWD /home/martin/X-Brain/Notes/Main/notes/tex
-INPUT /etc/texmf/web2c/texmf.cnf
-INPUT /usr/share/texmf/web2c/texmf.cnf
-INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
-INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
-INPUT /home/martin/X-Brain/Notes/Main/notes/tex/learnLatex.tex
-OUTPUT learnLatex.log
